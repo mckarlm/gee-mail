@@ -2,17 +2,95 @@
 	<head>
 		<script src="js/mail-generator.js"></script>
 		<link href="css/style.css" rel="stylesheet" media="screen">
-    <script>
+    <script type="text/JavaScript">
       window.onload = function(){
+        var timeHours = new Date().getHours();
+        var timeMinutes = new Date().getMinutes();
+        var timeSeconds = new Date().getSeconds();
+        document.getElementById("currentTime").innerHTML = timeHours + ":" + timeMinutes + ":" + timeSeconds;
+
+        function checkTime(j) {
+          if (j<10){j = "0" + j;}
+          return j;
+        }
+        //FIX LATER doesn't work for minutes???//
+
+        function inbox(){
+          var tBody = document.getElementById('tableBody');
+          tBody.innerHTML = '';
+
+          for (var i=0;i<geemails.length;i++){
+            var mail = geemails[i];
+            var tRow = document.createElement('tr');
+            var tCell;
+
+            tCell = document.createElement('td');
+            tCell.innerHTML = mail.sender;
+            tRow.appendChild(tCell);
+            tCell = document.createElement('td');
+            tCell.innerHTML = mail.subject;
+            tRow.appendChild(tCell);
+            tCell = document.createElement('td');
+            tCell.innerHTML = mail.date;
+            tRow.appendChild(tCell);
+            tBody.appendChild(tRow);
+          
+            var bodyRow = document.createElement('tr');
+            var bodyCell = document.createElement('td');
+
+            bodyCell.setAttribute('colspan', '3');
+            bodyRow.classList.add('message');
+            bodyRow.classList.add('hidden');
+            bodyCell.innerHTML = mail.body;
+            bodyRow.appendChild(bodyCell);
+            tBody.appendChild(bodyRow);
+
+            tRow.addEventListener('click', messGen);
+            function messGen(tRow){
+              tRow.currentTarget.nextSibling.classList.toggle('hidden');
+            }
+          }
+          var countMail = geemails.length;
+          document.getElementById("mailCount").innerHTML = "New Messages : " + countMail;
+        }
+        setInterval(function newMail(){
+          geemails.unshift(getNewMessage()); inbox(); }, 3500);
+
+        inbox();
+
         // ALL OF YOUR JAVASCRIPT CODE SHOULD GO HERE. 
         // We have to use window.onload so your JavaScript doesn't execute until the page has loaded and all HTML has been downloaded to your browser
-        
       };
     </script>
 	</head>
-	<body>
-		<div class="container" id="main">
-			Build Me!
-		</div>
+	<body> 
+    <header>
+      <h1>
+        gee-mail
+      </h1>
+    </header>
+    <div id = "currentTime"></div>
+    <div class="topnav">
+      <a href="#">Compose</a>
+      <a href="#">Inbox</a>
+      <a href="#">Outbox</a>
+      <a href="#">Garbage</a>
+      <a href="#">Spam</a>
+    </div>
+    <div id="mailCounter">
+      <h2 id="mailCount">email count</h2>
+    </div>
+    <div id="inboxTable">
+      <table id='inbox'>
+        <thead>
+          <tr>
+            <th id="sender">Sender</th>
+            <th id="subject">Subject</th>
+            <th id="date">Date</th>
+          </tr>
+        </thead>
+        <tbody id='tableBody'></tbody>
+      </table>
+    </div>
 	</body>
 </html>
